@@ -343,7 +343,7 @@ export class DashboardComponent {
       };
 
       // Send email using EmailJS
-      emailjs.send('service_0ezhvzs', 'template_jf9wyjy', templateParams, 'EJs1G7wYiFHwHx_-d')
+      emailjs.send('', '', templateParams, '')
         .then((response) => {
           console.log('Email sent successfully:', response);
           alert('Email sent successfully!');
