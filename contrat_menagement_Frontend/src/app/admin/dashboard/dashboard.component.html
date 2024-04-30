@@ -1,0 +1,210 @@
+<!-- parent-component.html -->
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+        <!-- Toggle button -->
+        <button data-mdb-collapse-init class="navbar-toggler" type="button" data-mdb-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Collapsible wrapper -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- Navbar brand -->
+            <a class="navbar-brand mt-2 mt-lg-0" href="https://idracompany.com/">
+                <img src="https://idrapoll.com/assets/logo-f25b389c.svg" height="15" alt="MDB Logo" loading="lazy" />
+            </a>
+            <!-- Left links -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <!-- <a class="nav-link" routerLink="/Admin/Dashboard">Dashboard</a> -->
+                </li>
+            </ul>
+            <!-- Left links -->
+        </div>
+        <!-- Collapsible wrapper -->
+
+        <!-- Right elements -->
+        <div class="d-flex align-items-center">
+            <!-- Icon -->
+            <a class="text-reset me-3" href="#">
+                <i class="fas fa-shopping-cart"></i>
+            </a>
+            <!-- Logout Button -->
+            <button class="btn btn-light" (click)="logout()">Logout</button>
+        </div>
+        <!-- Right elements -->
+    </div>
+    <!-- Container wrapper -->
+</nav>
+<!-- Navbar -->
+
+<div class="container mt-6 mb-3">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Contracts</h5>
+                    <p class="card-text">Total: {{ EmployeeArray.length }}</p>
+                    <button class="btn btn-outline-primary" (click)="exportTotalContractsToExcel()">Export to Excel</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Contracts close to completion</h5>
+                    <p class="card-text">Total: {{ contractsCloseToCompletionCount }}</p>
+                    <button class="btn btn-outline-primary" (click)="exportCloseToCompletionContractsToExcel()">Export to
+                        Excel</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Expired Contracts</h5>
+                    <p class="card-text">
+                        Total: {{ expiredContracts.length }} <br>
+                        Employees:
+                    </p>
+                    <ul class="list-unstyled">
+                        <li *ngFor="let expiredContract of expiredContracts">
+                            {{ expiredContract.employee }} - Expired on {{ expiredContract.end_date | date: 'yyyy-MM-dd'
+                            }}
+                        </li>
+                    </ul>
+                    <button class="btn btn-outline-primary" (click)="exportExpiredContractsToExcel()">Export to Excel</button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<div class="container-fluid mt-6"> <!-- Use container-fluid for full-width -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10"> <!-- Change the column size to a larger value, like col-lg-10 -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Contract Management</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Show the form only when `showForm` is true -->
+                    <div *ngIf="showForm">
+                        <!-- Your form code goes here -->
+                        <form (ngSubmit)="save()" style="width: 50%; margin: 0 auto;">
+                            <a class="btn btn-outline-secondary float-right mb-1" (click)="goBack()">Go Back</a>
+
+                            <div class="form-group">
+                                <label>Employee</label>
+                                <input type="text" [(ngModel)]="employee" name="employee" class="form-control"
+                                    id="employee">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" [(ngModel)]="email" name="email" class="form-control" id="email">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="text" [(ngModel)]="phone_number" name="phone_number" class="form-control"
+                                    id="phone_number">
+                            </div>
+                            <div class="form-group">
+                                <label>Personal Number</label>
+                                <input type="text" [(ngModel)]="personal_number" name="personal_number"
+                                    class="form-control" id="personal_number">
+                            </div>
+                            <div class="form-group">
+                                <label>Job Position</label>
+                                <input type="text" [(ngModel)]="job_position" name="job_position" class="form-control"
+                                    id="job_position">
+                            </div>
+                            <div class="form-group">
+                                <label>Contract</label>
+                                <input type="text" [(ngModel)]="contract" name="contract" class="form-control"
+                                    id="contract">
+                            </div>
+                            <div class="form-group">
+                                <label>Start Date</label>
+                                <input type="date" [(ngModel)]="start_date" name="start_date" class="form-control"
+                                    id="start_date">
+                            </div>
+                            <div class="form-group">
+                                <label>End Date</label>
+                                <input type="date" [(ngModel)]="end_date" name="end_date" class="form-control"
+                                    id="end_date">
+                            </div>
+                            <button type="submit" class="btn btn-outline-success btn-block">Submit</button>
+                        </form>
+                    </div>
+                    <!-- Show the table only when `showTable` is true -->
+                    <div *ngIf="showTable">
+                        <!-- Button to toggle form visibility -->
+                        <div class="d-flex justify-content-between mb-2">
+                            <button class="btn btn-outline-primary" (click)="toggleFormVisibility()">Create New User</button>
+                            <!-- Search input field -->
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" placeholder="Search by name"
+                                    [(ngModel)]="searchKeyword" (input)="search()">
+                            </div>
+                        </div>
+                        <!-- Table to display employee data -->
+                        <table class="table table-striped table-bordered table-hover" style="width: 100%;">
+                            <thead>
+                                <!-- Loading indicator if data is not yet loaded -->
+                                <tr *ngIf="!isResultLoaded">
+                                    <th colspan="10">
+                                        <h1>Loading...</h1>
+                                    </th>
+                                </tr>
+                                <!-- Table headers -->
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Employee</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Phone Number</th>
+                                    <th scope="col">Personal Number</th>
+                                    <th scope="col">Job Position</th>
+                                    <th scope="col">Contract</th>
+                                    <th scope="col">Start Date</th>
+                                    <th scope="col">End Date</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Loop through employee data and display in table rows -->
+                                <tr *ngFor="let EmployeeItem of pagedEmployeeArray; let i = index">
+                                    <!-- Index column -->
+                                    <td>{{ (pageIndex - 1) * pageSize + i + 1 }}</td>
+                                    <!-- Employee data columns -->
+                                    <td>{{ EmployeeItem.employee }}</td>
+                                    <td>{{ EmployeeItem.email }}</td>
+                                    <td>{{ EmployeeItem.phone_number }}</td>
+                                    <td>{{ EmployeeItem.personal_number }}</td>
+                                    <td>{{ EmployeeItem.job_position }}</td>
+                                    <td>{{ EmployeeItem.contract }}</td>
+                                    <td>{{ EmployeeItem.start_date | date: 'yyyy-MM-dd' }}</td>
+                                    <td>{{ EmployeeItem.end_date | date: 'yyyy-MM-dd' }}</td>
+                                    <!-- Action buttons -->
+                                    <td>
+                                        <button type="button" class="btn btn-outline-success mr-1"
+                                            (click)="setUpdate(EmployeeItem)">Edit</button>
+                                        <button type="button" class="btn btn-outline-danger"
+                                            (click)="setDelete(EmployeeItem)">Delete</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- Pagination -->
+                        <mat-paginator [length]="EmployeeArray.length" [pageSize]="pageSize"
+                            (page)="pageChanged($event)"></mat-paginator>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
